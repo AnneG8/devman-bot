@@ -1,13 +1,11 @@
 import requests
 import telegram
 import time
-import pprint
 from requests.exceptions import Timeout, ConnectionError
 from environs import Env
 
 
-def get_response(timestamp, token):
-    # url = 'https://dvmn.org/api/user_reviews/'
+def get_dvmn_response(timestamp, token):
     url = 'https://dvmn.org/api/long_polling/'
     headers = {
         'Authorization': f'Token {token}'
@@ -26,13 +24,12 @@ def main():
     DEVMAN_TOKEN = env('DEVMAN_TOKEN')
     BOT_TOKEN = env('BOT_TOKEN')
     CHAT_ID = env('CHAT_ID')
-    # json_path = 'answ.json'
 
     timestamp = None
     bot = telegram.Bot(token=BOT_TOKEN)
     while True:
         try:
-            response = get_response(timestamp, DEVMAN_TOKEN)
+            response = get_dvmn_response(timestamp, DEVMAN_TOKEN)
             review = response.json()
             if review['status'] == 'timeout':
                 timestamp = review['timestamp_to_request']
@@ -48,7 +45,7 @@ def main():
                          f'{result}'
                 )
         except Timeout:
-            print('Timeout')
+            pass
         except ConnectionError:
             time.sleep(3)
     
