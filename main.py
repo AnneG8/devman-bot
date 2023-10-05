@@ -22,11 +22,11 @@ def main():
     env = Env()
     env.read_env()
     devman_token = env('DEVMAN_TOKEN')
-    bot_token = env('BOT_TOKEN')
-    chat_id = env('CHAT_ID')
+    tg_bot_token = env('BOT_TOKEN')
+    user_chat_id = env('CHAT_ID')
 
     timestamp = None
-    bot = telegram.Bot(token=bot_token)
+    bot = telegram.Bot(token=tg_bot_token)
     while True:
         try:
             response = get_dvmn_response(timestamp, devman_token)
@@ -40,7 +40,7 @@ def main():
                 is_negative = review['new_attempts'][0]['is_negative']
                 result = 'Пришли правки.' if is_negative else 'Код принят.'
                 bot.send_message(
-                    chat_id=chat_id,
+                    chat_id=user_chat_id,
                     text=f"Урок [{lesson_title}]({lesson_url}) проверен.\n" \
                          f'{result}'
                 )
