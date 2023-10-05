@@ -21,15 +21,15 @@ def get_dvmn_response(timestamp, token):
 def main():
     env = Env()
     env.read_env()
-    DEVMAN_TOKEN = env('DEVMAN_TOKEN')
-    BOT_TOKEN = env('BOT_TOKEN')
-    CHAT_ID = env('CHAT_ID')
+    devman_token = env('DEVMAN_TOKEN')
+    bot_token = env('BOT_TOKEN')
+    chat_id = env('CHAT_ID')
 
     timestamp = None
-    bot = telegram.Bot(token=BOT_TOKEN)
+    bot = telegram.Bot(token=bot_token)
     while True:
         try:
-            response = get_dvmn_response(timestamp, DEVMAN_TOKEN)
+            response = get_dvmn_response(timestamp, devman_token)
             review = response.json()
             if review['status'] == 'timeout':
                 timestamp = review['timestamp_to_request']
@@ -40,7 +40,7 @@ def main():
                 is_negative = review['new_attempts'][0]['is_negative']
                 result = 'Пришли правки.' if is_negative else 'Код принят.'
                 bot.send_message(
-                    chat_id=CHAT_ID,
+                    chat_id=chat_id,
                     text=f"Урок [{lesson_title}]({lesson_url}) проверен.\n" \
                          f'{result}'
                 )
