@@ -2,13 +2,14 @@ import requests
 import telegram
 import time
 import logging
+from logging.handlers import SysLogHandler
 from requests.exceptions import Timeout, ConnectionError
 from environs import Env
 
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-syslog_handler = logging.handlers.SysLogHandler(address='/dev/log')
+syslog_handler = SysLogHandler(address='/dev/log')
 syslog_handler.setLevel(logging.INFO)
 logger.addHandler(syslog_handler)
 
