@@ -1,8 +1,16 @@
 import requests
 import telegram
 import time
+import logging
 from requests.exceptions import Timeout, ConnectionError
 from environs import Env
+
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+syslog_handler = logging.handlers.SysLogHandler(address='/dev/log')
+syslog_handler.setLevel(logging.INFO)
+logger.addHandler(syslog_handler)
 
 
 def get_dvmn_response(timestamp, token):
@@ -25,8 +33,16 @@ def main():
     tg_bot_token = env('BOT_TOKEN')
     user_chat_id = env('CHAT_ID')
 
+    while True:
+        try:
+            bot = telegram.Bot(token=tg_bot_token)
+            bot_info = bot.getMe()
+            logger.info('Bot started')
+            break
+        except telegram.TelegramError:
+            logger.error('Error connecting to Telegram bot.')
+
     timestamp = None
-    bot = telegram.Bot(token=tg_bot_token)
     while True:
         try:
             response = get_dvmn_response(timestamp, devman_token)
