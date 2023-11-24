@@ -73,8 +73,8 @@ def main():
                 )
         except HTTPError as err:
             logger.error(f'HTTPError: {err}')
-        except Timeout as err:
-            logger.error(f'Timeout: {err}')
+        except Timeout:
+            pass
         except ConnectionError as err:
             logger.error(f'ConnectionError: {err}')
             time.sleep(3)
