@@ -3,16 +3,23 @@ import telegram
 import time
 import logging
 import logging.handlers
-from requests.exceptions import Timeout, ConnectionError
+from requests.exceptions import Timeout, ConnectionError, HTTPError
 from environs import Env
 
 
+logging.basicConfig(level=logging.INFO,
+                    format="%(process)d %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-syslog_handler = logging.handlers.SysLogHandler(address='/dev/log')
-syslog_handler.setLevel(logging.INFO)
-logger.addHandler(syslog_handler)
 
+class BotLogsHandler(logging.Handler):
+    def __init__(self, bot_token, chat_id):
+        super().__init__()
+        self.bot = telegram.Bot(token=bot_token)
+        self.chat_id = chat_id
+    def emit(self, record):
+        log_entry = self.format(record)
+        self.bot.send_message(chat_id=self.chat_id,
+                              text=log_entry)
 
 def get_dvmn_response(timestamp, token):
     url = 'https://dvmn.org/api/long_polling/'
@@ -33,11 +40,13 @@ def main():
     devman_token = env('DEVMAN_TOKEN')
     tg_bot_token = env('BOT_TOKEN')
     user_chat_id = env('CHAT_ID')
+    admin_chat_id = env('ADMIN_CHAT_ID')
 
     while True:
         try:
             bot = telegram.Bot(token=tg_bot_token)
             bot_info = bot.getMe()
+            logger.addHandler(BotLogsHandler(tg_bot_token, admin_chat_id))
             logger.info('Bot started')
             break
         except telegram.TelegramError:
@@ -61,9 +70,12 @@ def main():
                     text=f"Урок [{lesson_title}]({lesson_url}) проверен.\n" \
                          f'{result}'
                 )
+        except HTTPError as err:
+            logger.error(err)
         except Timeout:
-            pass
+            logger.error(err)
         except ConnectionError:
+            logger.error(err)
             time.sleep(3)
     
 
