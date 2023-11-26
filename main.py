@@ -7,9 +7,8 @@ from requests.exceptions import Timeout, ConnectionError, HTTPError
 from environs import Env
 
 
-logging.basicConfig(level=logging.INFO,
-                    format="%(process)d %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class BotLogsHandler(logging.Handler):
     def __init__(self, bot_token, chat_id):
@@ -42,6 +41,8 @@ def main():
     user_chat_id = env('CHAT_ID')
     admin_chat_id = env('ADMIN_CHAT_ID')
 
+    logging.basicConfig(level=logging.INFO,
+                        format="%(process)d %(levelname)s %(message)s")
     while True:
         try:
             bot = telegram.Bot(token=tg_bot_token)
