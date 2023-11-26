@@ -1,8 +1,9 @@
-import requests
-import telegram
 import time
 import logging
 import logging.handlers
+
+import telegram
+import requests
 from requests.exceptions import Timeout, ConnectionError, HTTPError
 from environs import Env
 
@@ -19,6 +20,7 @@ class BotLogsHandler(logging.Handler):
         log_entry = self.format(record)
         self.bot.send_message(chat_id=self.chat_id,
                               text=log_entry)
+
 
 def get_dvmn_response(timestamp, token):
     url = 'https://dvmn.org/api/long_polling/'
