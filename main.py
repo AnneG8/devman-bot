@@ -45,14 +45,6 @@ def main():
 
     logging.basicConfig(level=logging.INFO,
                         format="%(process)d %(levelname)s %(message)s")
-    while True:
-        try:
-            bot = telegram.Bot(token=tg_bot_token)
-            bot_info = bot.getMe()
-            break
-        except telegram.TelegramError:
-            logger.error('Error connecting to Telegram bot.')
-
     logger.addHandler(BotLogsHandler(tg_bot_token, admin_chat_id))
     logger.info('Bot started')
 
