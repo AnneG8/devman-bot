@@ -15,7 +15,7 @@
 
 #### 1. Вариант №1 - используя docker-контейнер:
 
-Установите [Docker](https://www.docker.com/get-started/).
+Установите [Docker](https://www.docker.com/get-started/) версии 25.
 Выполните команды из корня репозитория:
 
 ```bash
