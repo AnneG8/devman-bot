@@ -25,6 +25,7 @@ docker run -d --env-file .env devman-bot
 
 #### 2. Вариант №2 - в ручную:
 
+Должен быть установлен Python версии 3.10.
 Выполните команды из корня репозитория:
 ```bash
 pip install -r requirements.txt
